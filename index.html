@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <meta name="theme-color" content="#7B2FFD" />
+  <title>Expressive Home — by Fahril Moonstar</title>
+  
+  <!-- Font: Orbitron (Cyberpunk Headings) + Roboto Mono (Body) + Material Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" rel="stylesheet" />
+
+  <style>
+    /* =============== CYBERPUNK THEME — FAHRIL MOONSTAR =============== */
+    :root {
+      --primary: #7B2FFD;
+      --primary-light: #A78BFA;
+      --secondary: #00F0FF;
+      --accent: #FF2EB7;
+      --bg-dark: #0C0C14;
+      --bg-card: #171725;
+      --bg-input: #1E1E2F;
+      --text-primary: #F0F0FF;
+      --text-secondary: #B0B0CC;
+      --border-glow: rgba(123, 47, 253, 0.5);
+      --neon-glow: 0 0 8px rgba(123, 47, 253, 0.6), 0 0 20px rgba(123, 47, 253, 0.3);
+      --neon-glow-cyan: 0 0 8px rgba(0, 240, 255, 0.6), 0 0 20px rgba(0, 240, 255, 0.3);
+      --pill: 999px;
+      --card: 16px;
+      --dialog: 20px;
+      --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Roboto Mono', monospace;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 0 16px;
+      transition: background 0.3s, color 0.3s;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* ===== SCANLINE EFFECT ===== */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(transparent 50%, rgba(0, 0, 0, 0.05) 50%);
+      background-size: 100% 4px;
+      pointer-events: none;
+      z-index: 999;
+      opacity: 0.3;
+    }
+
+    /* ===== FLOATING GRID BACKGROUND ===== */
+    .cyber-grid {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: 
+        linear-gradient(rgba(123, 47, 253, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(123, 47, 253, 0.05) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    /* ===== GLOWING ORBS ===== */
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.3;
+      pointer-events: none;
+      z-index: -1;
+    }
+    .orb-1 { width: 300px; height: 300px; background: var(--primary); top: -100px; right: -50px; }
+    .orb-2 { width: 250px; height: 250px; background: var(--secondary); bottom: -50px; left: -50px; }
+    .orb-3 { width: 200px; height: 200px; background: var(--accent); top: 40%; left: 50%; transform: translate(-50%, -50%); opacity: 0.15; }
+
+    /* =============== SCREEN =============== */
+    .screen { display: none; max-width: 480px; margin: 0 auto; position: relative; z-index: 1; }
+    .screen.active {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 48px;
+      animation: fadeIn 0.4s var(--spring);
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px) scale(0.96); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    h1 { 
+      font-family: 'Orbitron', sans-serif;
+      font-size: 32px; font-weight: 700; text-align: center;
+      background: linear-gradient(135deg, var(--primary-light), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 2px;
+    }
+    h2 { 
+      font-family: 'Orbitron', sans-serif;
+      font-size: 20px; font-weight: 600;
+      color: var(--primary-light);
+      letter-spacing: 1px;
+    }
+    h3 { 
+      font-family: 'Orbitron', sans-serif;
+      font-size: 18px; font-weight: 600;
+      color: var(--text-primary);
+    }
+    .subtitle {
+      font-size: 13px; color: var(--text-secondary);
+      text-align: center; margin-top: 12px; padding: 0 24px;
+      line-height: 1.6;
+    }
+
+    /* =============== BUTTON =============== */
+    .btn {
+      height: 56px; padding: 0 28px;
+      border: 1px solid transparent;
+      border-image: linear-gradient(135deg, var(--primary), var(--secondary)) 1;
+      background: linear-gradient(135deg, rgba(123, 47, 253, 0.15), rgba(0, 240, 255, 0.05));
+      color: var(--text-primary);
+      font: 600 13px 'Orbitron', sans-serif;
+      letter-spacing: 1px;
+      display: inline-flex; align-items: center; gap: 8px;
+      cursor: pointer;
+      transition: all 0.25s var(--spring);
+      position: relative;
+      overflow: hidden;
+    }
+    .btn::before {
+      content: "";
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      transition: left 0.5s;
+    }
+    .btn:hover::before { left: 100%; }
+    .btn:hover {
+      box-shadow: var(--neon-glow);
+      border-image: linear-gradient(135deg, var(--primary-light), var(--secondary)) 1;
+      transform: translateY(-2px);
+    }
+    .btn:active { transform: translateY(0) scale(0.97); }
+    .btn .material-symbols-rounded { font-size: 20px; }
+
+    .btn.filled { 
+      background: linear-gradient(135deg, var(--primary), #6B21E0);
+      border: none;
+      box-shadow: var(--neon-glow);
+    }
+    .btn.filled:hover { 
+      background: linear-gradient(135deg, #8B3FFE, var(--primary));
+      box-shadow: 0 0 12px rgba(123, 47, 253, 0.7), 0 0 30px rgba(123, 47, 253, 0.4);
+    }
+    .btn.tonal { 
+      background: rgba(0, 240, 255, 0.08);
+      border-color: var(--secondary);
+      border-image: none;
+      border-style: solid;
+      border-width: 1px;
+    }
+    .btn.tonal:hover { 
+      box-shadow: var(--neon-glow-cyan);
+      background: rgba(0, 240, 255, 0.12);
+    }
+    .btn.full   { width: 100%; justify-content: center; }
+
+    /* Connected button group */
+    .btn-group { display: flex; gap: 4px; margin-top: 40px; }
+    .btn-group .btn:first-child {
+      border-radius: var(--pill) 4px 4px var(--pill);
+    }
+    .btn-group .btn:last-child {
+      border-radius: 4px var(--pill) var(--pill) 4px;
+    }
+
+    .align-left {
+      width: 100%; display: flex; justify-content: flex-start;
+      margin-top: 48px;
+    }
+
+    /* =============== FORM =============== */
+    .form {
+      width: 100%; display: flex; flex-direction: column;
+      gap: 16px; margin-top: 28px;
+    }
+    .field { position: relative; display: block; }
+    .field input, .field textarea {
+      width: 100%; padding: 20px 20px 10px;
+      border: 1px solid rgba(123, 47, 253, 0.3);
+      border-radius: 12px;
+      background: var(--bg-input);
+      color: var(--text-primary);
+      font: 500 15px 'Roboto Mono', monospace;
+      outline: none; resize: none;
+      transition: all 0.25s ease;
+    }
+    .field textarea { border-radius: 12px; min-height: 100px; }
+    .field input:focus, .field textarea:focus { 
+      border-color: var(--primary);
+      box-shadow: inset 0 0 0 1px var(--primary), var(--neon-glow);
+    }
+    .field span {
+      position: absolute; left: 16px; top: 50%;
+      transform: translateY(-50%);
+      background: var(--bg-input);
+      padding: 0 6px;
+      color: var(--text-secondary); 
+      font-size: 13px;
+      font-family: 'Orbitron', sans-serif;
+      letter-spacing: 0.5px;
+      transition: all 0.15s var(--spring); 
+      pointer-events: none;
+    }
+    .field textarea + span { top: 16px; transform: none; }
+    .field input:focus + span, .field input:not(:placeholder-shown) + span,
+    .field textarea:focus + span, .field textarea:not(:placeholder-shown) + span {
+      top: 0; transform: translateY(-50%);
+      font-size: 11px; color: var(--secondary);
+    }
+    .error-text { color: #FF6B8A; font-size: 12px; min-height: 18px; margin-top: 4px; }
+    .hint { 
+      font-size: 11px; color: var(--text-secondary); 
+      margin-top: 20px; font-style: italic;
+    }
+
+    /* =============== TOPBAR =============== */
+    .topbar {
+      width: 100%; display: flex; align-items: center; gap: 12px;
+      padding: 8px 0 24px;
+      border-bottom: 1px solid rgba(123, 47, 253, 0.15);
+      margin-bottom: 8px;
+    }
+    .icon-btn {
+      width: 44px; height: 44px; border-radius: 10px;
+      background: rgba(123, 47, 253, 0.1);
+      border: 1px solid rgba(123, 47, 253, 0.25);
+      cursor: pointer;
+      display: grid; place-items: center; 
+      color: var(--primary-light);
+      transition: all 0.2s var(--spring);
+    }
+    .icon-btn:hover { 
+      background: rgba(123, 47, 253, 0.2);
+      box-shadow: var(--neon-glow);
+    }
+    .icon-btn:active { transform: scale(0.92); }
+
+    /* =============== LIST =============== */
+    .list {
+      width: 100%; display: flex; flex-direction: column;
+      gap: 14px; padding-bottom: 40px;
+    }
+    .card {
+      background: var(--bg-card);
+      border: 1px solid rgba(123, 47, 253, 0.2);
+      border-radius: var(--card);
+      padding: 20px;
+      display: flex; align-items: center; gap: 12px;
+      transition: all 0.25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .card:hover {
+      border-color: var(--primary);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(123, 47, 253, 0.15);
+    }
+    .card:hover::before { opacity: 1; }
+    .card .content { flex: 1; min-width: 0; }
+    .card .title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 15px; font-weight: 600;
+      color: var(--text-primary);
+      overflow-wrap: break-word; word-break: break-word;
+    }
+    .card .desc {
+      font-size: 13px; color: var(--text-secondary);
+      margin-top: 6px; overflow-wrap: break-word; word-break: break-word;
+      line-height: 1.5;
+    }
+    .card .actions { display: flex; gap: 6px; }
+    .card .icon-btn {
+      width: 38px; height: 38px;
+      background: transparent;
+      border-color: rgba(123, 47, 253, 0.15);
+    }
+    .card .icon-btn:hover {
+      background: rgba(123, 47, 253, 0.15);
+    }
+
+    /* =============== EMPTY =============== */
+    .empty {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 16px; padding: 80px 32px; text-align: center;
+    }
+    .empty .big { 
+      font-size: 64px; color: var(--primary); 
+      opacity: 0.4;
+      filter: drop-shadow(0 0 12px var(--primary));
+    }
+    .empty p { color: var(--text-secondary); font-size: 13px; line-height: 1.6; }
+    .hidden { display: none !important; }
+
+    /* =============== DIALOG =============== */
+    .dialog {
+      border: 1px solid var(--primary);
+      border-radius: var(--dialog);
+      padding: 28px; width: 90%; max-width: 400px;
+      background: var(--bg-card);
+      color: var(--text-primary);
+      box-shadow: 0 0 30px rgba(123, 47, 253, 0.25), 0 20px 60px rgba(0, 0, 0, 0.5);
+    }
+    .dialog::backdrop { background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(4px); }
+    .dialog[open] { animation: fadeIn 0.3s var(--spring); }
+    .dialog .field { margin-top: 16px; }
+    .dialog-actions {
+      display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px;
+    }
+    .text-btn {
+      padding: 10px 20px; border: 1px solid transparent;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--secondary);
+      font: 600 13px 'Orbitron', sans-serif;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .text-btn:hover { 
+      background: rgba(0, 240, 255, 0.1);
+      border-color: var(--secondary);
+    }
+    .text-btn.danger { color: #FF6B8A; }
+    .text-btn.danger:hover { 
+      background: rgba(255, 107, 138, 0.1);
+      border-color: #FF6B8A;
+    }
+
+    /* =============== EXPORT / IMPORT =============== */
+    .io-row {
+      width: 100%; display: flex; gap: 10px; margin-top: 12px;
+      margin-bottom: 40px; justify-content: center;
+    }
+    .io-btn {
+      padding: 10px 18px; 
+      border: 1px solid rgba(123, 47, 253, 0.3);
+      border-radius: 8px; 
+      background: rgba(123, 47, 253, 0.05);
+      color: var(--text-primary); 
+      font: 500 12px 'Orbitron', sans-serif;
+      cursor: pointer; 
+      display: inline-flex; 
+      align-items: center; 
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+    .io-btn:hover {
+      border-color: var(--primary);
+      background: rgba(123, 47, 253, 0.12);
+      box-shadow: var(--neon-glow);
+      transform: translateY(-1px);
+    }
+    .io-btn .material-symbols-rounded { font-size: 16px; color: var(--primary-light); }
+
+    /* =============== SIGNATURE =============== */
+    .signature {
+      text-align: center;
+      padding: 32px 0 48px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 11px;
+      color: var(--text-secondary);
+      letter-spacing: 2px;
+      opacity: 0.6;
+    }
+    .signature span {
+      color: var(--primary-light);
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Cyberpunk Background Elements -->
+  <div class="cyber-grid"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <!-- ====== HOME ====== -->
+  <section id="screen-home" class="screen active">
+    <h1>EXPRESSIVE<br>HOME</h1>
+    <p class="subtitle">Save what matters, store what counts.<br>Designed with the future in mind.</p>
+
+    <div class="btn-group">
+      <button class="btn filled" onclick="show('favorites')">
+        <span class="material-symbols-rounded">favorite</span> FAVORITES
+      </button>
+      <button class="btn tonal" onclick="show('getstarted')">
+        <span class="material-symbols-rounded">add_circle</span> CREATE
+      </button>
+    </div>
+
+    <div class="align-left">
+      <button class="btn filled" onclick="show('getstarted')">
+        GET STARTED <span class="material-symbols-rounded">arrow_forward</span>
+      </button>
+    </div>
+
+    <div class="signature">
+      ✦ DESIGNED & BUILT BY <span>FAHRIL MOONSTAR</span> ✦
+    </div>
+  </section>
+
+  <!-- ====== GET STARTED ====== -->
+  <section id="screen-getstarted" class="screen">
+    <header class="topbar">
+      <button class="icon-btn" onclick="show('home')" aria-label="Back">
+        <span class="material-symbols-rounded">arrow_back</span>
+      </button>
+      <h2>GET STARTED</h2>
+    </header>
+
+    <div class="form">
+      <label class="field">
+        <input id="input-title" type="text" placeholder=" " autocomplete="off" />
+        <span>ITEM NAME</span>
+      </label>
+      <label class="field">
+        <textarea id="input-desc" rows="3" placeholder=" "></textarea>
+        <span>DESCRIPTION (OPTIONAL)</span>
+      </label>
+      <p id="form-error" class="error-text"></p>
+
+      <button class="btn filled full" onclick="addFavorite()">
+        <span class="material-symbols-rounded">add</span> ADD TO FAVORITES
+      </button>
+    </div>
+
+    <p class="hint">⚡ Item akan tersimpan otomatis di penyimpanan perangkat kamu.</p>
+    
+    <div class="signature">
+      ✦ BY <span>FAHRIL MOONSTAR</span> ✦
+    </div>
+  </section>
+
+  <!-- ====== FAVORITES ====== -->
+  <section id="screen-favorites" class="screen">
+    <header class="topbar">
+      <button class="icon-btn" onclick="show('home')" aria-label="Back">
+        <span class="material-symbols-rounded">arrow_back</span>
+      </button>
+      <h2>FAVORITES</h2>
+    </header>
+
+    <div id="list" class="list"></div>
+
+    <div id="empty" class="empty hidden">
+      <span class="material-symbols-rounded big">favorite</span>
+      <h3>EMPTY COLLECTION</h3>
+      <p>Belum ada item yang disimpan.<br>Klik "Get Started" untuk membuat yang pertama!</p>
+    </div>
+
+    <!-- Export / Import -->
+    <div class="io-row">
+      <button class="io-btn" onclick="exportJson()">
+        <span class="material-symbols-rounded">download</span> EXPORT DATA
+      </button>
+      <button class="io-btn" onclick="document.getElementById('import-file').click()">
+        <span class="material-symbols-rounded">upload</span> IMPORT DATA
+      </button>
+      <input id="import-file" type="file" accept="application/json"
+             style="display:none" onchange="importJson(event)" />
+    </div>
+    
+    <div class="signature">
+      ✦ POWERED BY <span>FAHRIL MOONSTAR</span> ✦
+    </div>
+  </section>
+
+  <!-- ====== DIALOG EDIT ====== -->
+  <dialog id="dialog-edit" class="dialog">
+    <h3>✦ EDIT ITEM</h3>
+    <label class="field">
+      <input id="edit-title" type="text" placeholder=" " autocomplete="off" />
+      <span>NEW NAME</span>
+    </label>
+    <label class="field">
+      <textarea id="edit-desc" rows="2" placeholder=" "></textarea>
+      <span>NEW DESCRIPTION</span>
+    </label>
+    <div class="dialog-actions">
+      <button class="text-btn" onclick="closeDialog('dialog-edit')">CANCEL</button>
+      <button class="text-btn" onclick="saveEdit()">✓ SAVE</button>
+    </div>
+  </dialog>
+
+  <!-- ====== DIALOG DELETE ====== -->
+  <dialog id="dialog-delete" class="dialog">
+    <h3>⚠ CONFIRM DELETE</h3>
+    <p id="delete-msg">Item ini akan dihapus secara permanen dari koleksi kamu.</p>
+    <div class="dialog-actions">
+      <button class="text-btn" onclick="closeDialog('dialog-delete')">KEEP ITEM</button>
+      <button class="text-btn danger" onclick="confirmDelete()">✕ DELETE</button>
+    </div>
+  </dialog>
+
+  <script>
+    /* ==============================================
+       STORAGE & DATA — FAHRIL MOONSTAR SYSTEM
+       ============================================== */
+    const KEY = "moonstar-favorites";
+
+    function readAll() {
+      try {
+        return JSON.parse(localStorage.getItem(KEY) || "[]");
+      } catch { return []; }
+    }
+    function writeAll(items) {
+      localStorage.setItem(KEY, JSON.stringify(items));
+    }
+    function nextId(items) {
+      return items.length ? Math.max(...items.map(i => i.id)) + 1 : 1;
+    }
+
+    /* ==============================================
+       NAVIGATION SYSTEM
+       ============================================== */
+    function show(name, push = true) {
+      document.querySelectorAll(".screen")
+        .forEach(s => s.classList.remove("active"));
+      const target = document.getElementById("screen-" + name);
+      if (!target) return;
+      target.classList.add("active");
+      if (name === "favorites") load();
+      if (push) history.pushState({ name }, "", "#" + name);
+      window.scrollTo(0, 0);
+    }
+    window.addEventListener("popstate", e =>
+      show(e.state?.name || "home", false)
+    );
+
+    /* ==============================================
+       LOAD & RENDER LIST
+       ============================================== */
+    function load() {
+      const all = readAll().sort((a, b) => b.createdAt - a.createdAt);
+      const list = document.getElementById("list");
+      const empty = document.getElementById("empty");
+      list.innerHTML = "";
+
+      if (all.length === 0) {
+        empty.classList.remove("hidden");
+        return;
+      }
+      empty.classList.add("hidden");
+
+      all.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+          <div class="content">
+            <div class="title">${escapeHtml(item.title)}</div>
+            ${item.description ? `<div class="desc">${escapeHtml(item.description)}</div>` : ""}
+          </div>
+          <div class="actions">
+            <button class="icon-btn" data-edit aria-label="Edit">
+              <span class="material-symbols-rounded">edit</span>
+            </button>
+            <button class="icon-btn" data-del aria-label="Delete">
+              <span class="material-symbols-rounded">delete</span>
+            </button>
+          </div>`;
+        card.querySelector("[data-edit]").onclick = () => openEdit(item);
+        card.querySelector("[data-del]").onclick  = () => openDelete(item);
+        list.appendChild(card);
+      });
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    /* ==============================================
+       ADD NEW ITEM
+       ============================================== */
+    function addFavorite() {
+      const title = document.getElementById("input-title").value.trim();
+      const desc  = document.getElementById("input-desc").value.trim();
+      const err   = document.getElementById("form-error");
+
+      if (!title) { err.textContent = "⚠ Nama item wajib diisi!"; return; }
+      err.textContent = "";
+
+      const all = readAll();
+      all.push({
+        id: nextId(all),
+        title,
+        description: desc,
+        createdAt: Date.now(),
+      });
+      writeAll(all);
+
+      document.getElementById("input-title").value = "";
+      document.getElementById("input-desc").value = "";
+      show("favorites");
+    }
+
+    /* ==============================================
+       EDIT ITEM
+       ============================================== */
+    let editingId = null;
+    function openEdit(item) {
+      editingId = item.id;
+      document.getElementById("edit-title").value = item.title;
+      document.getElementById("edit-desc").value = item.description || "";
+      document.getElementById("dialog-edit").showModal();
+    }
+
+    function saveEdit() {
+      const title = document.getElementById("edit-title").value.trim();
+      const desc  = document.getElementById("edit-desc").value.trim();
+      if (!title) return;
+
+      const all = readAll().map(i =>
+        i.id === editingId ? { ...i, title, description: desc } : i
+      );
+      writeAll(all);
+      closeDialog("dialog-edit");
+      load();
+    }
+
+    /* ==============================================
+       DELETE ITEM
+       ============================================== */
+    let deletingId = null;
+    function openDelete(item) {
+      deletingId = item.id;
+      document.getElementById("delete-msg").textContent =
+        `Yakin ingin menghapus "${item.title}"? Tindakan ini tidak bisa dibatalkan.`;
+      document.getElementById("dialog-delete").showModal();
+    }
+
+    function confirmDelete() {
+      const all = readAll().filter(i => i.id !== deletingId);
+      writeAll(all);
+      closeDialog("dialog-delete");
+      load();
+    }
+
+    function closeDialog(id) {
+      document.getElementById(id).close();
+    }
+
+    /* ==============================================
+       EXPORT & IMPORT SYSTEM
+       ============================================== */
+    function exportJson() {
+      const data = readAll();
+      if (data.length === 0) {
+        alert("⚠ Belum ada data untuk diekspor!");
+        return;
+      }
+      const blob = new Blob([JSON.stringify(data, null, 2)], {
+        type: "application/json",
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `moonstar-favorites-${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function importJson(ev) {
+      const file = ev.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const imported = JSON.parse(reader.result);
+          if (!Array.isArray(imported)) throw new Error("Format file tidak valid");
+
+          const existing = readAll();
+          const maxId = existing.length
+            ? Math.max(...existing.map(i => i.id))
+            : 0;
+          let counter = maxId;
+          const added = imported.map(item => ({
+            id: ++counter,
+            title: String(item.title || "Untitled"),
+            description: String(item.description || ""),
+            createdAt: Number(item.createdAt) || Date.now(),
+          }));
+          writeAll([...existing, ...added]);
+          load();
+          alert(`✅ Berhasil mengimpor ${added.length} item ke koleksi kamu!`);
+        } catch (e) {
+          alert(`❌ Gagal mengimpor: ${e.message}`);
+        }
+        ev.target.value = "";
+      };
+      reader.readAsText(file);
+    }
+
+    /* ==============================================
+       INITIALIZE APP
+       ============================================== */
+    document.addEventListener('DOMContentLoaded', () => {
+      show(location.hash.replace("#", "") || "home", false);
+    });
+  </script>
+</body>
+</html>
+
